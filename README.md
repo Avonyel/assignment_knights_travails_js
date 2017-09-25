@@ -59,7 +59,7 @@ search = (searchTerm) => {
 			currentNode = currentNode.nextNode
 }
 
-4. 
+4.
 
 search = (searchTerm) => {
 	searchArray = outerArray
@@ -74,3 +74,9 @@ search = (searchTerm) => {
 		searchArray.shift()
 	}
 }
+
+
+
+[D4, C1]
+yes if its a tree
+[[D4, C1], [C1, B1], etc...]
