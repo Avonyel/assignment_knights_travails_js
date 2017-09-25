@@ -69,38 +69,32 @@ class AdjacencyList {
 class KnightSearcher {
   constructor(adjacencyList, start) {
     this.list = adjacencyList;
-    this.start = start
+    this.start = start;
+  }
 
   bfsFor(target) {
     let searchArray = [this.start];
-    let vertex = this.adjacencyList[searchArray[0][0]][searchArray[0][1]];
+    let depth = 0;
+    let results = [];
+
+    let vertex = this.list[searchArray[0][0]][searchArray[0][1]];
     let found = null;
     while (searchArray.length && !found) {
-      searchArray.push(vertex.pos)
-      while (vertex.next) {
-        vertex = vertex.next
-        searchArray.push(vertex)
+      if (vertex.data[0] === target[0] && vertex.data[1] === target[1]) {
+        found = vertex;
       }
-      if (vertex.pos[0] === target[0] && vertex.pos[1] === target[1]) {
-        found = node;
+      searchArray.push(vertex.data);
+      while (vertex.next) {
+        vertex = vertex.next;
+        if (vertex.data[0] === target[0] && vertex.data[1] === target[1]) {
+          found = vertex;
+        }
+        searchArray.push(vertex);
       }
       searchArray.shift();
-      searchArray = node.children.concat(searchArray);
-      node = searchArray[0];
+      vertex = this.list[searchArray[0][0]][searchArray[0][1]];
     }
-
-    let currentNode = found;
-    let moves = [];
-    while (currentNode.depth) {
-      moves.unshift(currentNode.pos);
-      currentNode = currentNode.parent;
-    }
-    //console.log(" ");
-    moves.forEach((move, i) => {
-      //console.log(`Move ${i + 1}:`, move);
-    });
-    //console.log("Required", moves.length, "moves.");
-    //console.log(" ");
+    return found;
   }
 }
 
@@ -112,3 +106,5 @@ for (let i = 0; i < 8; i++) {
 }
 
 const newList = new AdjacencyList(coords);
+const knight = new KnightSearcher(newList.list, [0, 0]);
+console.log(knight.bfsFor([1, 2]));
