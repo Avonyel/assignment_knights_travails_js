@@ -41,7 +41,6 @@ class MoveTree {
           !(possPos[1] < 0) &&
           !(possPos[1] > 7)
         ) {
-          console.log(possPos);
           let newNode = new Move(possPos, node.depth + 1, node);
           node.children.push(newNode);
           remainingNodes.push(newNode);
@@ -67,19 +66,85 @@ class KnightSearcher {
   }
 
   bfsFor(target) {
-    const searchArray = [tree.startingPos];
+    let searchArray = [this.tree.startingPos];
     let node = searchArray[0];
-    while (searchArray.length) {
-      if (node.pos === target) {
-        //break and do a thing
+    let found = null;
+    while (searchArray.length && !found) {
+      if (node.pos[0] === target[0] && node.pos[1] === target[1]) {
+        found = node;
       }
-
-      searchArray.concat(node.children);
+      searchArray = searchArray.concat(node.children);
       searchArray.shift();
       node = searchArray[0];
     }
+
+    let currentNode = found;
+    let moves = [];
+    while (currentNode.depth) {
+      moves.unshift(currentNode.pos);
+      currentNode = currentNode.parent;
+    }
+    console.log(" ");
+    moves.forEach((move, i) => {
+      console.log(`Move ${i + 1}:`, move);
+    });
+    console.log("Required", moves.length, "moves.");
+    console.log(" ");
+  }
+
+  dfsFor(target) {
+    let searchArray = [this.tree.startingPos];
+    let node = searchArray[0];
+    let found = null;
+    while (searchArray.length && !found) {
+      if (node.pos[0] === target[0] && node.pos[1] === target[1]) {
+        found = node;
+      }
+      searchArray.shift();
+      searchArray = node.children.concat(searchArray);
+      node = searchArray[0];
+    }
+
+    let currentNode = found;
+    let moves = [];
+    while (currentNode.depth) {
+      moves.unshift(currentNode.pos);
+      currentNode = currentNode.parent;
+    }
+    console.log(" ");
+    moves.forEach((move, i) => {
+      console.log(`Move ${i + 1}:`, move);
+    });
+    console.log("Required", moves.length, "moves.");
+    console.log(" ");
   }
 }
 
-const tree = new MoveTree([0, 1], 1);
-tree.inspect();
+const tree = new MoveTree([0, 0], 6);
+// tree.inspect();
+
+const knight = new KnightSearcher(tree);
+// different results:
+// [0, 0] => [1, 3]
+// [0,0] => [7, 7]   // HOOOLY COW
+
+let coord = [7, 7];
+
+const start = Date.now();
+for (let i = 0; i < 40; i++) {
+  console.log("depth:");
+  knight.dfsFor(coord);
+}
+const end = Date.now();
+const time = end - start;
+
+const brStart = Date.now();
+for (let i = 0; i < 40; i++) {
+  console.log("breadth:");
+  knight.bfsFor(coord);
+}
+const brEnd = Date.now();
+const brTime = brEnd - brStart;
+
+console.log("Depth took", time);
+console.log("Breadth took", brTime);
