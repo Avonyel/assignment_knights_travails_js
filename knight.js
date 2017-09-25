@@ -1,5 +1,5 @@
 class Move {
-  constructor(pos, depth, children = null, parent = null) {
+  constructor(pos, depth, parent = null, children = []) {
     this.pos = pos;
     this.depth = depth;
     this.children = children;
@@ -13,6 +13,8 @@ class MoveTree {
     this.maxDepth = maxDepth;
     this.nodes = 0;
     this.tree = null;
+
+    this.generate();
   }
 
   generate() {
@@ -27,26 +29,28 @@ class MoveTree {
       [-1, -2]
     ];
 
-    let depth = 0;
+    let remainingNodes = [this.startingPos];
+    let node = remainingNodes[0];
 
-    while ()
-    possibilities.forEach(pos => {
-      let possPos = [
-        node[0] + pos[0],
-        node[1] + pos[1]
-      ];
-
-      if (
-        !possPos[0] < 0 &&
-        !possPos[0] > 7 &&
-        !possPos[1] < 0 &&
-        !possPos[1] > 7
-      ) {
-        //possPos
-        depth++
-        node.children.push(new Move(possPos, depth))
-      }
-    });
+    while (node && node.depth < this.maxDepth) {
+      possibilities.forEach(pos => {
+        let possPos = [node.pos[0] + pos[0], node.pos[1] + pos[1]];
+        if (
+          !(possPos[0] < 0) &&
+          !(possPos[0] > 7) &&
+          !(possPos[1] < 0) &&
+          !(possPos[1] > 7)
+        ) {
+          console.log(possPos);
+          let newNode = new Move(possPos, node.depth + 1, node);
+          node.children.push(newNode);
+          remainingNodes.push(newNode);
+          this.nodes++;
+        }
+      });
+      remainingNodes.shift();
+      node = remainingNodes[0];
+    }
   }
 
   inspect() {
@@ -57,4 +61,25 @@ class MoveTree {
   }
 }
 
+class KnightSearcher {
+  constructor(tree) {
+    this.tree = tree;
+  }
+
+  bfsFor(target) {
+    const searchArray = [tree.startingPos];
+    let node = searchArray[0];
+    while (searchArray.length) {
+      if (node.pos === target) {
+        //break and do a thing
+      }
+
+      searchArray.concat(node.children);
+      searchArray.shift();
+      node = searchArray[0];
+    }
+  }
+}
+
 const tree = new MoveTree([0, 1], 1);
+tree.inspect();
