@@ -124,9 +124,6 @@ const tree = new MoveTree([0, 0], 6);
 // tree.inspect();
 
 const knight = new KnightSearcher(tree);
-// different results:
-// [0, 0] => [1, 3]
-// [0,0] => [7, 7]   // HOOOLY COW
 
 let coord = [7, 7];
 let diff = 0;
