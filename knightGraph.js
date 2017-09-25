@@ -5,8 +5,8 @@ class Coord {
 }
 
 class Edge {
-  constructor() {
-    this.data;
+  constructor(data) {
+    this.data = data;
     this.next;
   }
 }
@@ -35,6 +35,7 @@ class AdjacencyList {
 
     allCoords.forEach(coord => {
       possibilities.forEach(pos => {
+        this.list[coord.pos[0]] = this.list[coord.pos[0]] || [];
         currentVertex = this.list[coord.pos[0]][coord.pos[1]];
 
         let possPos = [coord.pos[0] + pos[0], coord.pos[1] + pos[1]];
@@ -44,14 +45,17 @@ class AdjacencyList {
           !(possPos[1] < 0) &&
           !(possPos[1] > 7)
         ) {
-          while (currentVertex.next) {
-            currentVertex = currentVertex.next;
+          if (!currentVertex) {
+            this.list[coord.pos[0]][coord.pos[1]] = new Edge(possPos);
+          } else {
+            while (currentVertex.next) {
+              currentVertex = currentVertex.next;
+            }
+            currentVertex.next = new Edge(possPos);
           }
-          currentVertex.next = new Edge(possPos);
         }
       });
     });
-    console.log(this.list);
   }
 
   inspect() {
@@ -63,43 +67,21 @@ class AdjacencyList {
 }
 
 class KnightSearcher {
-  constructor(tree) {
-    this.tree = tree;
-  }
+  constructor(adjacencyList, start) {
+    this.list = adjacencyList;
+    this.start = start
 
   bfsFor(target) {
-    let searchArray = [this.tree.startingPos];
-    let node = searchArray[0];
+    let searchArray = [this.start];
+    let vertex = this.adjacencyList[searchArray[0][0]][searchArray[0][1]];
     let found = null;
     while (searchArray.length && !found) {
-      if (node.pos[0] === target[0] && node.pos[1] === target[1]) {
-        found = node;
+      searchArray.push(vertex.pos)
+      while (vertex.next) {
+        vertex = vertex.next
+        searchArray.push(vertex)
       }
-      searchArray = searchArray.concat(node.children);
-      searchArray.shift();
-      node = searchArray[0];
-    }
-
-    let currentNode = found;
-    let moves = [];
-    while (currentNode.depth) {
-      moves.unshift(currentNode.pos);
-      currentNode = currentNode.parent;
-    }
-    // console.log(" ");
-    moves.forEach((move, i) => {
-      // console.log(`Move ${i + 1}:`, move);
-    });
-    // console.log("Required", moves.length, "moves.");
-    // console.log(" ");
-  }
-
-  dfsFor(target) {
-    let searchArray = [this.tree.startingPos];
-    let node = searchArray[0];
-    let found = null;
-    while (searchArray.length && !found) {
-      if (node.pos[0] === target[0] && node.pos[1] === target[1]) {
+      if (vertex.pos[0] === target[0] && vertex.pos[1] === target[1]) {
         found = node;
       }
       searchArray.shift();
