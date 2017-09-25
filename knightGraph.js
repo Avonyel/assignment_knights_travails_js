@@ -73,28 +73,27 @@ class KnightSearcher {
   }
 
   bfsFor(target) {
-    let searchArray = [this.start];
-    let depth = 0;
+    let queue = [this.start];
     let results = [];
 
-    let vertex = this.list[searchArray[0][0]][searchArray[0][1]];
+    let edge = this.list[queue[0][0]][queue[0][1]];
     let found = null;
-    while (searchArray.length && !found) {
-      if (vertex.data[0] === target[0] && vertex.data[1] === target[1]) {
-        found = vertex;
+    while (queue.length && !found) {
+      if (edge.data[0] === target[0] && edge.data[1] === target[1]) {
+        found = edge;
       }
-      searchArray.push(vertex.data);
-      while (vertex.next) {
-        vertex = vertex.next;
-        if (vertex.data[0] === target[0] && vertex.data[1] === target[1]) {
-          found = vertex;
+      queue.push(edge.data);
+      while (edge.next) {
+        edge = edge.next;
+        if (edge.data[0] === target[0] && edge.data[1] === target[1]) {
+          found = edge;
         }
-        searchArray.push(vertex);
+        queue.push(edge.data);
       }
-      searchArray.shift();
-      vertex = this.list[searchArray[0][0]][searchArray[0][1]];
+      queue.shift();
+      edge = this.list[queue[0][0]][queue[0][1]];
     }
-    return found;
+    return found.data;
   }
 }
 
@@ -107,4 +106,4 @@ for (let i = 0; i < 8; i++) {
 
 const newList = new AdjacencyList(coords);
 const knight = new KnightSearcher(newList.list, [0, 0]);
-console.log(knight.bfsFor([1, 2]));
+console.log(knight.bfsFor([7, 7]));
